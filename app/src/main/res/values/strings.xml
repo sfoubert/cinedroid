@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">cinedroid</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hello world from seb !</string>
     <string name="action_settings">Settings</string>
 
 </resources>
