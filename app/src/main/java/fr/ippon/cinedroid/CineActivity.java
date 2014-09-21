@@ -25,6 +25,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ippon.cinedroid.task.CineTask;
+
 
 public class CineActivity extends Activity {
 
@@ -36,13 +38,11 @@ public class CineActivity extends Activity {
 
         setContentView(R.layout.activity_cine);
 
-        // Call Async webService
-        new CineTask().execute();
+        ListView listView = (ListView)findViewById(R.id.listView);
 
-//        ListView listView = (ListView) findViewById(R.id.listView);
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemList);
-//        listView.setAdapter(adapter);
+        // Call Async webService
+        new CineTask(this, listView).execute();
+
     }
 
 
@@ -65,100 +65,5 @@ public class CineActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    /**
-     * Async Task
-     */
-    private class CineTask extends AsyncTask<String, String, JSONArray> {
-
-        public static final String CINEJS_URL = "http://cinejs.herokuapp.com";
-        public static final String CINEJS_LAST_RECOMMANDATIONS_JSON = CINEJS_URL + "/entry/listLastRecommandationsJSON";
-
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            listView = (ListView)findViewById(R.id.listView);
-            progressDialog = new ProgressDialog(CineActivity.this);
-            progressDialog.setMessage("En attente...");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(true);
-            progressDialog.show();
-        }
-
-        @Override
-        protected JSONArray doInBackground(String[] params) {
-            return listLastRecommandationsJSON();
-        }
-
-        public JSONArray listLastRecommandationsJSON() {
-            JSONArray recommandationsArray = null;
-            String json = "";
-            try {
-
-                // make web service connection
-                HttpGet request = new HttpGet(CINEJS_LAST_RECOMMANDATIONS_JSON);
-                request.setHeader("Accept", "application/json");
-                request.setHeader("Content-type", "application/json");
-
-                // Send request to service
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpResponse response = httpClient.execute(request);
-
-                Log.d("WebInvoke", "Saving: " + response.getStatusLine().toString());
-                // Get the status of web service
-                BufferedReader rd = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent()));
-                // print status in log
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    json += line;
-                }
-                Log.d("JSON", "JSON : " + json);
-
-                // try parse the string to a JSON object
-                try {
-                    recommandationsArray = new JSONArray(json);
-                } catch (JSONException e) {
-                    Log.e("JSON Parser", "Error parsing data " + e.toString());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return recommandationsArray;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray recommandationsArray) {
-            progressDialog.dismiss();
-            try {
-                // Getting JSON Array
-                Log.d("recommandationsArray", recommandationsArray.toString());
-
-
-                List<String> itemList = new ArrayList<String>();
-
-                for(int i = 0 ; i < recommandationsArray.length() ; i++){
-                    JSONObject recommandation = recommandationsArray.getJSONObject(i);
-                    JSONObject movie = recommandation.getJSONObject("movie");
-                    JSONObject user = recommandation.getJSONObject("user");
-
-                    StringBuilder strItem = new StringBuilder().append(user.getString("firstname")).append(" ").append(user.getString("name"))
-                            .append(" recommande ").append(movie.getString("title")).append("\n");
-
-                    itemList.add(strItem.toString());
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CineActivity.this, android.R.layout.simple_list_item_1, itemList);
-                listView.setAdapter(adapter);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
 }
