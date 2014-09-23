@@ -1,50 +1,44 @@
 package fr.ippon.cinedroid;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.ippon.cinedroid.task.CineTask;
+import fr.ippon.cinedroid.listener.DrawerItemClickListener;
 
 
 public class CineActivity extends Activity {
 
-    private ListView listView;
+    private String[] menuTitles;
+    private DrawerLayout drawerLayout;
+    private ListView drawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_cine);
 
-        ListView listView = (ListView)findViewById(R.id.listView);
+        // Navigable Drawer
+        menuTitles = getResources().getStringArray(R.array.menu_array);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // Call Async webService
-        new CineTask(this, listView).execute();
+        // Set the adapter for the list view
+        drawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, menuTitles));
+
+        // Set the adapter for the list view
+        drawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, menuTitles));
+
+        // Set the list's click listener
+        drawerList.setOnItemClickListener(new DrawerItemClickListener(this));
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,5 +59,27 @@ public class CineActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public String[] getMenuTitles() {
+        return menuTitles;
+    }
 
+    public void setMenuTitles(String[] menuTitles) {
+        this.menuTitles = menuTitles;
+    }
+
+    public DrawerLayout getDrawerLayout() {
+        return drawerLayout;
+    }
+
+    public void setDrawerLayout(DrawerLayout drawerLayout) {
+        this.drawerLayout = drawerLayout;
+    }
+
+    public ListView getDrawerList() {
+        return drawerList;
+    }
+
+    public void setDrawerList(ListView drawerList) {
+        this.drawerList = drawerList;
+    }
 }

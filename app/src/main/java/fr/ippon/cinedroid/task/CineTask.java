@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.ippon.cinedroid.CineActivity;
+import fr.ippon.cinedroid.R;
 
 /**
  * Async Task
@@ -33,13 +34,11 @@ public class CineTask extends AsyncTask<String, String, JSONArray> {
     public static final String CINEJS_LAST_RECOMMANDATIONS_JSON = CINEJS_URL + "/entry/listLastRecommandationsJSON";
 
     private CineActivity cineActivity;
-    private ListView listView;
 
     private ProgressDialog progressDialog;
 
-    public CineTask(CineActivity cineActivity, ListView listView) {
+    public CineTask(CineActivity cineActivity) {
         this.cineActivity = cineActivity;
-        this.listView = listView;
     }
 
     @Override
@@ -118,6 +117,8 @@ public class CineTask extends AsyncTask<String, String, JSONArray> {
             }
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(cineActivity, android.R.layout.simple_list_item_1, itemList);
+
+            ListView listView = (ListView)cineActivity.findViewById(R.id.listView);
             listView.setAdapter(adapter);
 
         } catch (JSONException e) {
