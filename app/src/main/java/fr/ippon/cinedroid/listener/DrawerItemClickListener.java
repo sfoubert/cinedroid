@@ -56,15 +56,9 @@ public class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         // Highlight the selected item, update the title, and close the drawer
         drawerList.setItemChecked(position, true);
-//        setTitle(menuTitles[position]);
+        cineActivity.setTitle(menuTitles[position]);
         drawerLayout.closeDrawer(drawerList);
     }
-
-//    @Override
-//    public void setTitle(CharSequence title) {
-//        //mTitle = title;
-//        //getActionBar().setTitle(mTitle);
-//    }
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;

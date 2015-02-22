@@ -5,10 +5,14 @@ package fr.ippon.cinedroid.task;
  */
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -116,7 +120,21 @@ public class CineTask extends AsyncTask<String, String, JSONArray> {
                 itemList.add(strItem.toString());
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(cineActivity, android.R.layout.simple_list_item_1, itemList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(cineActivity, android.R.layout.simple_list_item_1, itemList) {
+                /* (non-Javadoc)
+                 * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
+                 */
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    // TODO Auto-generated method stub
+                    TextView txt = new TextView(this.getContext());
+                    //just change textview properties
+                    txt.setTextColor(Color.BLACK);
+                    txt.setTextSize(12);
+                    txt.setText(this.getItem(position));
+                    return txt;
+                }
+            };
 
             ListView listView = (ListView)cineActivity.findViewById(R.id.listView);
             listView.setAdapter(adapter);
